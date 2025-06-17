@@ -1,0 +1,33 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto-17 # 根据你的项目需求选择合适的 Java 版本
+    commands:
+      - echo "安装依赖项"
+      - mvn dependency:resolve
+
+  pre_build:
+    commands:
+      - echo "执行预构建步骤"
+      - mvn validate
+
+  build:
+    commands:
+      - echo "开始构建项目"
+      - mvn compile
+
+  post_build:
+    commands:
+      - echo "运行单元测试"
+      - mvn test
+
+artifacts:
+  files:
+    - target/*.jar # 假设构建输出为 JAR 文件，根据实际情况调整路径
+  discard-paths: yes
+
+cache:
+  paths:
+    - /root/.m2/**/* # 缓存 Maven 依赖以加快后续构建速度
