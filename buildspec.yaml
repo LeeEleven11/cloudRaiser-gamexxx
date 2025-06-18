@@ -3,10 +3,13 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      java: corretto-17 # 根据你的项目需求选择合适的 Java 版本
+    # 若有需要可保留其他运行时版本配置
     commands:
-      - echo "安装依赖项"
-      - mvn dependency:resolve
+      # 配置 Amazon Corretto YUM 仓库
+      - sudo rpm --import https://yum.corretto.aws/corretto.key
+      - sudo curl -L -o /etc/yum.repos.d/corretto.repo https://yum.corretto.aws/corretto.repo
+      # 安装 Amazon Corretto 17
+      - yum --disablerepo="*" --enablerepo="AmazonCorretto" -y install java-17-amazon-corretto-devel
 
   pre_build:
     commands:
