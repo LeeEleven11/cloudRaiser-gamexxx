@@ -17,7 +17,7 @@ hooks:
       runas: ec2-user
 
   BeforeInstall:
-    - location: scripts/before_install.sh
+    - location: scripts/BeforeInstall.sh
       timeout: 300
       runas: ec2-user
 
