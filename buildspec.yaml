@@ -19,6 +19,8 @@ phases:
     commands:
       - echo "运行单元测试"
       - mvn test
+      - chmod +x scripts/*.sh
+
 
 artifacts:
   files:
