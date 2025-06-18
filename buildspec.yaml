@@ -3,24 +3,18 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-    # 若有需要可保留其他运行时版本配置
+      java: corretto17  # 确保缩进正确，与 install: 对齐
     commands:
-      # 配置 Amazon Corretto YUM 仓库
-      - sudo rpm --import https://yum.corretto.aws/corretto.key
-      - sudo curl -L -o /etc/yum.repos.d/corretto.repo https://yum.corretto.aws/corretto.repo
-      # 安装 Amazon Corretto 17
-      - yum --disablerepo="*" --enablerepo="AmazonCorretto" -y install java-17-amazon-corretto-devel
-
+      - mvn --version
+      - mvn install
   pre_build:
     commands:
       - echo "执行预构建步骤"
       - mvn validate
-
   build:
     commands:
       - echo "开始构建项目"
       - mvn compile
-
   post_build:
     commands:
       - echo "运行单元测试"
@@ -28,9 +22,9 @@ phases:
 
 artifacts:
   files:
-    - target/*.jar # 假设构建输出为 JAR 文件，根据实际情况调整路径
+    - target/*.jar
   discard-paths: yes
 
 cache:
   paths:
-    - /root/.m2/**/* # 缓存 Maven 依赖以加快后续构建速度
+    - /root/.m2/**/*  # 确保路径正确（Maven 缓存通常在 ~/.m2/repository）
