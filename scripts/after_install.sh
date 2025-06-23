@@ -1,2 +1,3 @@
-# 示例：复制生产环境配置文件
-cp /home/ec2-user/config/application-prod.properties /home/ec2-user/myapp/application.properties
+#!/bin/bash
+echo "Using the bundled application.properties..."
+# 无需复制，直接使用部署包中的文件
