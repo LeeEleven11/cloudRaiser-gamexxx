@@ -3,18 +3,25 @@ os: linux
 files:
   - source: target/cloudRaiser-eks-0.0.1-SNAPSHOT.jar
     destination: /home/ec2-user/myapp/target/
+    overwrite: true
   - source: application.properties
     destination: /home/ec2-user/myapp/
+    overwrite: true
   - source: scripts/after_install.sh
     destination: /home/ec2-user/myapp/scripts/
+    overwrite: true
   - source: scripts/before_install.sh
     destination: /home/ec2-user/myapp/scripts/
+    overwrite: true
   - source: scripts/start.sh
     destination: /home/ec2-user/myapp/scripts/
+    overwrite: true
   - source: scripts/stop.sh
     destination: /home/ec2-user/myapp/scripts/
+    overwrite: true
   - source: scripts/validate.sh
     destination: /home/ec2-user/myapp/scripts/
+    overwrite: true
 
 
 permissions:
