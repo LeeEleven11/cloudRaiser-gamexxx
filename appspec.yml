@@ -5,7 +5,7 @@ files:
     destination: /home/ec2-user/myapp/target/
   - source: application.properties
     destination: /home/ec2-user/myapp/
-  - source: scripts/*. sh
+  - source: scripts/*.sh
     destination: /home/ec2-user/myapp/scripts/
 
 permissions:
