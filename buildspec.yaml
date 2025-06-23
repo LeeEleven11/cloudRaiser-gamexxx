@@ -5,32 +5,20 @@ phases:
     runtime-versions:
       java: corretto17
     commands:
-      - mvn --version
-      - mvn clean package  # 确保生成 JAR 和复制资源文件
+      - mvn clean package
 
   post_build:
     commands:
-      # 1. 确认关键文件存在
-      - echo "验证构建结果:"
-      - ls -l target/cloudRaiser-eks-*.jar  # 检查 JAR 文件
-      - ls -l src/main/resources/application.properties  # 检查配置文件
-
-      # 2. 将配置文件复制到构建根目录（CodeDeploy 需要）
-      - cp src/main/resources/application.properties ./
-
-      # 3. 设置脚本可执行权限
-      - chmod -R +x scripts/  # 递归添加执行权限
-      - chmod +x scripts/*.sh
-
-      # 4. 打印部署包内容（调试用）
-      - echo "最终打包内容:"
-      - ls -l appspec.yml scripts/ target/ application.properties
+      - echo "当前目录: $(pwd)"
+      - echo "检查 scripts/ 内容:"
+      - ls -lR scripts/
+      - chmod -R +x scripts/
+      - zip -r deploy.zip appspec.yml scripts/ target/ application.properties
 
 artifacts:
   files:
-    # 必须包含的文件（注意路径匹配项目结构）
-    - target/cloudRaiser-eks-*.jar  # 动态匹配 JAR 文件名
-    - scripts/**/*  # 明确包含 scripts 下所有内容
+    - target/cloudRaiser-eks-*.jar
+    - scripts/**/*
     - appspec.yml
-    - application.properties  # 从根目录引用
-  discard-paths: no  # 保留原始目录结构
+    - application.properties
+  discard-paths: no
