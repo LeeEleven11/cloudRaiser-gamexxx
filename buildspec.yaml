@@ -30,6 +30,6 @@ artifacts:
   discard-paths: yes
 
 
-cache:
-  paths:
-    - /root/.m2/**/*  # 确保路径正确（Maven 缓存通常在 ~/.m2/repository）
+#cache:
+#  paths:
+#    - /root/.m2/**/*  # 确保路径正确（Maven 缓存通常在 ~/.m2/repository）
