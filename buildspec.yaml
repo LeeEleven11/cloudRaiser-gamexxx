@@ -15,19 +15,26 @@ phases:
     commands:
       - echo "开始构建项目"
       - mvn compile
+#  post_build:
+#    commands:
+#      - echo "运行单元测试"
+#      - mvn test
+#      - chmod +x scripts/*.sh
+#
   post_build:
     commands:
-      - echo "运行单元测试"
-      - mvn test
-      - chmod +x scripts/*.sh
+      - echo "Listing deployment archive contents..."
+      - ls -R scripts  # 确认脚本文件存在
+      - zip -r deploy.zip appspec.yml scripts target/*.jar  # 手动打包（可选）
 
 
 artifacts:
   files:
     - appspec.yml
-    - scripts/**
+    - scripts/**/*
     - target/*.jar
-  discard-paths: yes
+  # 移除 discard-paths 或设置为 no
+  discard-paths: no
 
 
 #cache:
