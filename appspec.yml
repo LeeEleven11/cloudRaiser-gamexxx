@@ -13,6 +13,12 @@ permissions:
     pattern: "**/*"
     owner: ec2-user
     group: ec2-user
+    mode: "755"
+  - object: /home/ec2-user/myapp/scripts
+    pattern: "**/*"
+    owner: ec2-user
+    group: ec2-user
+    mode: "755"
 
 hooks:
   ApplicationStop:
