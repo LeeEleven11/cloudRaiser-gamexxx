@@ -10,6 +10,9 @@ phases:
 
   post_build:
     commands:
+      - echo "强制更新脚本文件..."
+      - sudo rm -f scripts/*.sh  # 清理旧文件
+
 
       # 1. 确认关键文件存在
       - echo "验证构建结果:"
