@@ -3,34 +3,33 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      java: corretto17  # 确保缩进正确，与 install: 对齐
+      java: corretto17
     commands:
       - mvn --version
-      - mvn install
-  pre_build:
-    commands:
-      - echo "执行预构建步骤"
-      - mvn validate
-  build:
-    commands:
-      - echo "开始构建项目"
-      - mvn compile
-post_build:
-  commands:
-    - echo "检查 target/ 目录结构:"
-    - ls -lR target/  # 关键：确认 JAR 文件的实际路径
-    - echo "打包部署文件:"
-    - zip -r deploy.zip appspec.yml scripts/ target/  # 打包整个 target 目录
+      - mvn clean package  # 确保生成 JAR 和复制资源文件
 
+  post_build:
+    commands:
+      # 1. 确认关键文件存在
+      - echo "验证构建结果:"
+      - ls -l target/cloudRaiser-eks-*.jar  # 检查 JAR 文件
+      - ls -l src/main/resources/application.properties  # 检查配置文件
+
+      # 2. 将配置文件复制到构建根目录（CodeDeploy 需要）
+      - cp src/main/resources/application.properties ./
+
+      # 3. 设置脚本可执行权限
+      - chmod +x scripts/*.sh
+
+      # 4. 打印部署包内容（调试用）
+      - echo "最终打包内容:"
+      - ls -l appspec.yml scripts/ target/ application.properties
 
 artifacts:
   files:
-    - target/*.jar          # 包含 JAR 文件（保留原始路径）
-    - scripts/**/*          # 包含脚本
-    - appspec.yml           # 包含部署配置
-  discard-paths: no         # 必须保留目录结构！
-
-
-#cache:
-#  paths:
-#    - /root/.m2/**/*  # 确保路径正确（Maven 缓存通常在 ~/.m2/repository）
+    # 必须包含的文件（注意路径匹配项目结构）
+    - target/cloudRaiser-eks-*.jar  # 动态匹配 JAR 文件名
+    - scripts/**/*
+    - appspec.yml
+    - application.properties  # 从根目录引用
+  discard-paths: no  # 保留原始目录结构
