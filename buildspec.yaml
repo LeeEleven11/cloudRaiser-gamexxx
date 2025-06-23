@@ -15,17 +15,12 @@ phases:
     commands:
       - echo "开始构建项目"
       - mvn compile
-#  post_build:
-#    commands:
-#      - echo "运行单元测试"
-#      - mvn test
-#      - chmod +x scripts/*.sh
-#
-  post_build:
-    commands:
-      - echo "Listing deployment archive contents..."
-      - ls -R scripts  # 确认脚本文件存在
-      - zip -r deploy.zip appspec.yml scripts target/*.jar  # 手动打包（可选）
+post_build:
+  commands:
+    - echo "检查 target/ 目录结构:"
+    - ls -lR target/  # 关键：确认 JAR 文件的实际路径
+    - echo "打包部署文件:"
+    - zip -r deploy.zip appspec.yml scripts/ target/  # 打包整个 target 目录
 
 
 artifacts:
