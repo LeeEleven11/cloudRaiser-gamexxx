@@ -1,7 +1,9 @@
 version: 0.0
 os: linux
 files:
-  - source: /
+  - source: /target/*.jar          # 源路径（构建生成的 JAR）
+    destination: /home/ec2-user/myapp  # 目标路径
+  - source: /application.properties
     destination: /home/ec2-user/myapp
 
 permissions:
