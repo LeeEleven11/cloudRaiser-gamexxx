@@ -2,25 +2,49 @@
 
 echo "Validating the service..."
 
-# 从配置文件中获取端口（默认 8080）
+# 1. 确定配置文件路径
 CONFIG_FILE="/home/ec2-user/myapp/application.properties"
-PORT=$(grep "server.port" "$CONFIG_FILE" | cut -d'=' -f2 || echo "8080")
+if [ ! -f "$CONFIG_FILE" ]; then
+  echo "ERROR: Configuration file not found at $CONFIG_FILE"
+  exit 1
+fi
 
-# 等待应用启动（可调整超时时间）
-MAX_RETRIES=5
+# 2. 获取端口号（带默认值）
+PORT=$(grep -E '^server.port' "$CONFIG_FILE" | cut -d'=' -f2 | tr -d '[:space:]')
+PORT=${PORT:-8080}  # 默认8080如果配置中没有指定
+echo "Checking service on port: $PORT"
+
+# 3. 等待应用启动
+MAX_RETRIES=10
 RETRY_INTERVAL=5
+SERVICE_UP=false
+
 for i in $(seq 1 $MAX_RETRIES); do
-  if ss -tuln | grep ":$PORT" > /dev/null; then
+  # 检查端口是否监听
+  if ss -tuln | grep -q ":$PORT "; then
     echo "Port $PORT is listening."
-    # 进一步检查 HTTP 接口（示例）
-    if curl -s "http://localhost:$PORT/actuator/health" | grep -q "UP"; then
+
+    # 检查健康端点
+    HEALTH_RESPONSE=$(curl -s "http://localhost:$PORT/actuator/health" || echo "{}")
+    if echo "$HEALTH_RESPONSE" | grep -q '"status":"UP"'; then
       echo "Service is fully up and healthy."
-      exit 0
+      SERVICE_UP=true
+      break
+    else
+      echo "Health check failed. Response: $HEALTH_RESPONSE"
     fi
+  else
+    echo "Port $PORT not yet listening."
   fi
-  sleep "$RETRY_INTERVAL"
+
   echo "Retrying... ($i/$MAX_RETRIES)"
+  sleep $RETRY_INTERVAL
 done
 
-echo "Validation failed: Service not responding on port $PORT."
-exit 1
+if [ "$SERVICE_UP" = false ]; then
+  echo "Validation failed: Service not responding properly on port $PORT"
+  echo "Last health check response: $HEALTH_RESPONSE"
+  exit 1
+fi
+
+exit 0
