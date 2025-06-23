@@ -30,11 +30,10 @@ phases:
 
 artifacts:
   files:
-    - appspec.yml
-    - scripts/**/*
-    - target/*.jar
-  # 移除 discard-paths 或设置为 no
-  discard-paths: no
+    - target/*.jar          # 包含 JAR 文件（保留原始路径）
+    - scripts/**/*          # 包含脚本
+    - appspec.yml           # 包含部署配置
+  discard-paths: no         # 必须保留目录结构！
 
 
 #cache:

@@ -1,10 +1,12 @@
 version: 0.0
 os: linux
 files:
-  - source: /home/ec2-user/myapp/target/*.jar          # 源路径（构建生成的 JAR）
+  - source: target/*.jar            # 部署包内的相对路径（非绝对路径）
     destination: /home/ec2-user/myapp  # 目标路径
   - source: /application.properties
     destination: /home/ec2-user/myapp
+  - source: scripts/*
+    destination: /home/ec2-user/nyapp/scripts
 
 permissions:
   - object: /home/ec2-user/myapp
