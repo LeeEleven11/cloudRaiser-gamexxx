@@ -19,6 +19,7 @@ phases:
       - cp src/main/resources/application.properties ./
 
       # 3. 设置脚本可执行权限
+      - chmod -R +x scripts/  # 递归添加执行权限
       - chmod +x scripts/*.sh
 
       # 4. 打印部署包内容（调试用）
@@ -29,7 +30,7 @@ artifacts:
   files:
     # 必须包含的文件（注意路径匹配项目结构）
     - target/cloudRaiser-eks-*.jar  # 动态匹配 JAR 文件名
-    - scripts/**/*
+    - scripts/**/*  # 明确包含 scripts 下所有内容
     - appspec.yml
     - application.properties  # 从根目录引用
   discard-paths: no  # 保留原始目录结构
